@@ -6,8 +6,29 @@
     <title>Cadastro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   </head>
-   <body class="bg-light">
-    
+    <body class="bg-light">
+
+   <?php
+        if(isset($_POST['acao'])){
+            $nome = $_POST['nome'];
+            $sobrenome = $_POST['sobrenome'];
+            $endereco = $_POST['endereco'];
+            if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == false){
+                echo 'Email inválido';
+            } else {
+                    $email = $_POST['email'];
+                    $pdo = new PDO('pgsql:host=localhost;dbname=formulario-cadastro-php', 'postgres', '1234');
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    $sql = $pdo->prepare("INSERT INTO clientes (nome, sobrenome, email, endereco) VALUES (?, ?, ?, ?)");
+                    $sql->execute([$nome, $sobrenome, $endereco,$email]);
+                    
+                    echo 'Cadastro realizado com sucesso!';
+            };
+           
+        }
+    ?>
+
 <div class="container">
   <main>
     <div class="py-5 text-center">
@@ -19,7 +40,7 @@
           <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">Primeiro nome</label>
-              <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+              <input name="nome" type="text" class="form-control" id="firstName" placeholder="" value="" required>
               <div class="invalid-feedback">
                 Valid first name is required.
               </div>
@@ -27,7 +48,7 @@
 
             <div class="col-sm-6">
               <label for="lastName" class="form-label">Último nome</label>
-              <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+              <input name="sobrenome" type="text" class="form-control" id="lastName" placeholder="" value="" required>
               <div class="invalid-feedback">
                 Valid last name is required.
               </div>
@@ -36,7 +57,7 @@
 
             <div class="col-12">
               <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com">
+              <input name="email" type="text" class="form-control" id="email" placeholder="you@example.com">
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
               </div>
@@ -44,7 +65,7 @@
 
             <div class="col-12">
               <label for="address" class="form-label">Address</label>
-              <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+              <input name="endereco" type="text" class="form-control" id="address" placeholder="1234 Main St" required>
               <div class="invalid-feedback">
                 Please enter your shipping address.
               </div>
@@ -53,7 +74,7 @@
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Cadastrar</button>
+          <button class="w-100 btn btn-primary btn-lg" type="submit" name="acao">Cadastrar</button>
         </form>
       </div>
     </div>
